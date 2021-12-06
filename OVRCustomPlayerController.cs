@@ -407,8 +407,8 @@ public class OVRCustomPlayerController : MonoBehaviour
 				MoveThrottle += ort * (Mathf.Abs(primaryAxis.y) * transform.lossyScale.z * moveInfluence *
 									   BackAndSideDampen * Vector3.back);
 
-			if (secondaryAxis.y < 0.0f)
-				MoveThrottle += ort * (Mathf.Abs(secondaryAxis.y) * transform.lossyScale.z * moveInfluence *
+			if (secondaryAxis.y > 0.0f)
+				MoveThrottle += ort * (secondaryAxis.y * transform.lossyScale.z * moveInfluence *
 									   BackAndSideDampen * Vector3.up);
 			
 			if (secondaryAxis.y < 0.0f)
