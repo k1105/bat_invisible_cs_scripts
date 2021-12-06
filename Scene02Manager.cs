@@ -11,7 +11,7 @@ public class Scene02Manager : MonoBehaviour
     /// <summary>
     /// image = UI上でボタン操作などで表示を切り替える対象となる画像.
     /// </summary>
-    public Image image;
+    public GameObject image;
     public GameObject player = null;
     public GameObject opponent = null;
     private int windowState;
