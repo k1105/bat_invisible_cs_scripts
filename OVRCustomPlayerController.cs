@@ -387,31 +387,41 @@ public class OVRCustomPlayerController : MonoBehaviour
 #endif
 
 			Vector2 primaryAxis = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick);
+			Vector2 secondaryAxis = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick);
 
 			// If speed quantization is enabled, adjust the input to the number of fixed speed steps.
 			if (FixedSpeedSteps > 0)
 			{
 				primaryAxis.y = Mathf.Round(primaryAxis.y * FixedSpeedSteps) / FixedSpeedSteps;
-				primaryAxis.x = Mathf.Round(primaryAxis.x * FixedSpeedSteps) / FixedSpeedSteps;
+				// primaryAxis.x = Mathf.Round(primaryAxis.x * FixedSpeedSteps) / FixedSpeedSteps;
+				secondaryAxis.y = Mathf.Round(secondaryAxis.y * FixedSpeedSteps) / FixedSpeedSteps;
 			}
 
             float phi = CameraRig.transform.rotation.x * 1.5f;
             Vector3 forwardVec = new Vector3(0.0f, Mathf.Sin(phi), Mathf.Cos(phi));
 
             if (primaryAxis.y > 0.0f)
-                MoveThrottle += ort * (primaryAxis.y * transform.lossyScale.z * moveInfluence * forwardVec);
+                MoveThrottle += ort * (primaryAxis.y * transform.lossyScale.z * moveInfluence * Vector3.forward);
 
 			if (primaryAxis.y < 0.0f)
 				MoveThrottle += ort * (Mathf.Abs(primaryAxis.y) * transform.lossyScale.z * moveInfluence *
 									   BackAndSideDampen * Vector3.back);
 
-			// if (primaryAxis.x < 0.0f)
-			// 	MoveThrottle += ort * (Mathf.Abs(primaryAxis.x) * transform.lossyScale.x * moveInfluence *
-			// 						   BackAndSideDampen * Vector3.left);
+			if (secondaryAxis.y > 0.0f)
+				MoveThrottle += ort * (secondaryAxis.y * transform.lossyScale.z * moveInfluence *
+									   BackAndSideDampen * Vector3.up);
+			
+			if (secondaryAxis.y < 0.0f)
+				MoveThrottle += ort * (Mathf.Abs(secondaryAxis.y) * transform.lossyScale.z * moveInfluence *
+									   BackAndSideDampen * Vector3.down);
 
-			// if (primaryAxis.x > 0.0f)
-			// 	MoveThrottle += ort * (primaryAxis.x * transform.lossyScale.x * moveInfluence * BackAndSideDampen *
-			// 						   Vector3.right);
+			if (primaryAxis.x < 0.0f)
+				MoveThrottle += ort * (Mathf.Abs(primaryAxis.x) * transform.lossyScale.x * moveInfluence *
+									   BackAndSideDampen * Vector3.left);
+
+			if (primaryAxis.x > 0.0f)
+				MoveThrottle += ort * (primaryAxis.x * transform.lossyScale.x * moveInfluence * BackAndSideDampen *
+									   Vector3.right);
 		}
 
 		if (EnableRotation)
@@ -469,8 +479,8 @@ public class OVRCustomPlayerController : MonoBehaviour
 			}
 			else
 			{ /// SnapRotationを使用しない場合のコントローラーを使った回転を行う部分
-				Vector2 secondaryAxis = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick);
-				euler.y += secondaryAxis.x * rotateInfluence; // y軸方向の回転 = 右スティックによる回転. 
+				// Vector2 secondaryAxis = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick);
+				// euler.y += secondaryAxis.x * rotateInfluence; // y軸方向の回転 = 右スティックによる回転. 
 			}
 
 			if (RotateAroundGuardianCenter)
