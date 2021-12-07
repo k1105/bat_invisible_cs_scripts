@@ -387,7 +387,7 @@ public class OVRCustomPlayerController : MonoBehaviour
 #endif
 
 			Vector2 primaryAxis = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick);
-			Vector2 secondaryAxis = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick);
+			Vector2 secondaryAxis = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick);
 
 			// If speed quantization is enabled, adjust the input to the number of fixed speed steps.
 			if (FixedSpeedSteps > 0)
@@ -415,13 +415,13 @@ public class OVRCustomPlayerController : MonoBehaviour
 				MoveThrottle += ort * (Mathf.Abs(secondaryAxis.y) * transform.lossyScale.z * moveInfluence *
 									   BackAndSideDampen * Vector3.down);
 
-			// if (primaryAxis.x < 0.0f)
-			// 	MoveThrottle += ort * (Mathf.Abs(primaryAxis.x) * transform.lossyScale.x * moveInfluence *
-			// 						   BackAndSideDampen * Vector3.left);
+			if (primaryAxis.x < 0.0f)
+				MoveThrottle += ort * (Mathf.Abs(primaryAxis.x) * transform.lossyScale.x * moveInfluence *
+									   BackAndSideDampen * Vector3.left);
 
-			// if (primaryAxis.x > 0.0f)
-			// 	MoveThrottle += ort * (primaryAxis.x * transform.lossyScale.x * moveInfluence * BackAndSideDampen *
-			// 						   Vector3.right);
+			if (primaryAxis.x > 0.0f)
+				MoveThrottle += ort * (primaryAxis.x * transform.lossyScale.x * moveInfluence * BackAndSideDampen *
+									   Vector3.right);
 		}
 
 		if (EnableRotation)
