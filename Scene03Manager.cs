@@ -138,8 +138,8 @@ public class Scene03Manager : MonoBehaviour
                 isTimeUp = true;
                 Invoke("ChangeScene", 10f);
         }
-        
-        if (windowState >= 4) {
+
+        if (windowState >= 3) {
         // リストに今の位置座標を格納.
         posList.Add(player.transform.position);
         // 衝突判定ようにprevPosの更新.
