@@ -9,7 +9,7 @@ public class MultiEcholocationController : MonoBehaviour
     // ここにインスペクター上でEcholocationマテリアルをセットしておく
 
     // 半径が大きくなるスピード
-    [SerializeField][Min(0.0f)] private float speed = .01f;
+    [SerializeField][Min(0.0f)] private float speed = 5.0f;
 
     // 現在の半径
     private Vector4[] centers = new Vector4[50];
@@ -17,27 +17,32 @@ public class MultiEcholocationController : MonoBehaviour
     private int circle_num = 0;
     private int tail = 0;
 
+    private float[] volumes = new float[50];
+
     // 毎フレーム半径のセットおよび拡張を行う
     private void Update()
     {
-        Shader.SetGlobalFloatArray("GlobalRadiuses", this.radiuses);
-        for(int i=0; i<this.circle_num; i++) {
-            this.radiuses[i] += 1.0f * Time.deltaTime;
+        Shader.SetGlobalFloatArray("GlobalRadiuses", radiuses);
+        for(int i=0; i<circle_num; i++) {
+            radiuses[i] += speed * Time.deltaTime;
         }
-        
+
     }
 
     // 他のスクリプトからEmitCallを実行することで
     // 中心点を設定し、半径を0にリセットする
-    public void EmitCall(Vector3 position)
+    public void EmitCall(Vector3 position, float volume)
     {
-        this.radiuses[this.tail] = 0.0f;
-        this.tail = (this.tail + 1) % 50;
-        this.centers[this.tail] = position;
-        Shader.SetGlobalVectorArray("GlobalCenters", this.centers);
-        if (this.circle_num < 50) {
-            this.circle_num++;
+        radiuses[tail] = 0.0f;
+        volumes[tail] = volume;
+        Shader.SetGlobalFloatArray("GlobalVolumes", volumes);
+        centers[tail] = position;
+        Shader.SetGlobalVectorArray("GlobalCenters", centers);
+        if (circle_num < 50) {
+            circle_num++;
         }
-        Shader.SetGlobalInt("GlobalCircleNum", this.circle_num);
+        Shader.SetGlobalInt("GlobalCircleNum", circle_num);
+        // 末尾のindex更新
+        tail = (tail + 1) % 50;
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using static ImageTransition;
 
 public class Scene03Manager : MonoBehaviour
 {
@@ -23,6 +24,7 @@ public class Scene03Manager : MonoBehaviour
     public GameObject progressImageObject;
     private int windowState = 0;
     protected static List<Vector3> posList;
+    protected static List<Quaternion> rotList;
     private Vector3 prevPos;
     private bool isCleared = false;
     private bool isTimeUp = false;
@@ -48,7 +50,9 @@ public class Scene03Manager : MonoBehaviour
 
         //resultで移動を再現するための位置座標リスト.
         posList = new List<Vector3>(); // 初期化処理
+        rotList = new List<Quaternion>();
         posList.Add(player.transform.position); //最初の座標の代入
+        rotList.Add(player.transform.rotation);
 
         echolocationCount = 0; //初期化処理
         clearTime = -1.0f; //timeUp時にclearTimeを表示させないために, 有効範囲外の数字を初期値として代入しておく.
@@ -58,20 +62,30 @@ public class Scene03Manager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (OVRInput.GetDown(OVRInput.RawButton.A)) {
+        if (OVRInput.GetDown(OVRInput.RawButton.A) && !infoImage.IsTransition()) {
             if ( windowState == 0 ) {
-                infoImage.sprite = Resources.Load<Sprite>("Scene03_02Speak");
+                StartCoroutine(infoImage.Transit(Resources.Load<Sprite>("Scene03_02Bat")));
                 windowState = 1;
             }
 
             else if ( windowState == 1 ) {
-                infoImage.sprite = Resources.Load<Sprite>("Scene03_03Let's");
+                StartCoroutine(infoImage.Transit(Resources.Load<Sprite>("Scene03_03Speak_01")));
                 windowState = 2;
             }
 
             else if ( windowState == 2 ) {
-                infoImage.sprite = Resources.Load<Sprite>("Scene03_03Let's");
+                StartCoroutine(infoImage.Transit(Resources.Load<Sprite>("Scene03_03Speak_02")));
                 windowState = 3;
+            }
+
+            else if ( windowState == 3 ) {
+                StartCoroutine(infoImage.Transit(Resources.Load<Sprite>("Scene03_04Let's")));
+                windowState = 4;
+            }
+            
+            else if ( windowState == 4 ) {
+                StartCoroutine(infoImage.Transit(Resources.Load<Sprite>("Scene04_Transparent")));
+                windowState = 5;
             }
         }
 
@@ -112,7 +126,7 @@ public class Scene03Manager : MonoBehaviour
                 progressState = 6;
             } else if (wallHit.collider.name == "Goalpoint" && !isTimeUp) { //clear!
                 progressImage.sprite = Resources.Load<Sprite>("Scene03_Progress_Goal");
-                infoImage.sprite = Resources.Load<Sprite>("Scene03_04Clear");
+                infoImage.sprite = Resources.Load<Sprite>("Scene03_05Clear");
                 isCleared = true;
                 clearTime = totalTime - leftTime;
                 Invoke("ChangeScene", 10f);
@@ -126,6 +140,8 @@ public class Scene03Manager : MonoBehaviour
         }
         // リストに今の位置座標を格納.
         posList.Add(player.transform.position);
+        rotList.Add(player.transform.rotation);
+
         // 衝突判定ようにprevPosの更新.
         prevPos = currentPos;
 
@@ -146,6 +162,10 @@ public class Scene03Manager : MonoBehaviour
 
     public static List<Vector3> GetPosList() {
         return posList;
+    }
+
+    public static List<Quaternion> GetRotList() {
+        return rotList;
     }
 
     public static int GetEcholocationCount() {

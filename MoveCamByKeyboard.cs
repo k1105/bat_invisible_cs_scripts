@@ -2,12 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MoveObjectByKeyBoard : MonoBehaviour
+public class MoveCamByKeyboard : MonoBehaviour
 {
+    Vector3 delta;
+    Vector3 theta;
 
-    public bool isCollide = false;
-    private Vector3 delta;
-    private Vector3 theta;
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
 
     // Update is called once per frame
     void Update () {
@@ -33,25 +37,20 @@ public class MoveObjectByKeyBoard : MonoBehaviour
 
         // 正面に移動
         if (Input.GetKey(KeyCode.LeftShift)) {
-            delta = this.transform.forward * 1.0f;
+            delta = this.transform.forward * 0.05f;
         }
 
         // 後方に移動
         if (Input.GetKey(KeyCode.RightShift)) {
-            delta = -this.transform.forward * 1.0f;
+            delta = -this.transform.forward * 0.1f;
         }
 
-        if (isCollide) {
-            RaycastHit wallHit;
+        RaycastHit wallHit;
 
-            if ( !(Physics.SphereCast(currentPos, 0.1f, -delta, out wallHit, 0.5f))) {
-                this.transform.position += delta;
-                this.transform.eulerAngles += theta;
-            }
-        } else {
+
             this.transform.position += delta;
             this.transform.eulerAngles += theta;
-        }
+
 
 
 }
