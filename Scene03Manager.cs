@@ -138,11 +138,15 @@ public class Scene03Manager : MonoBehaviour
                 isTimeUp = true;
                 Invoke("ChangeScene", 10f);
         }
+
+        if (windowState >= 3) {
         // リストに今の位置座標を格納.
         posList.Add(player.transform.position);
-        rotList.Add(player.transform.rotation);
-
         // 衝突判定ようにprevPosの更新.
+        prevPos = currentPos;
+        }
+
+        // 衝突判定用にprevPosの更新.
         prevPos = currentPos;
 
         // echolocationCountの更新処理
